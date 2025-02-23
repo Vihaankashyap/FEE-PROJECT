@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('https://t4.ftcdn.net/jpg/05/39/63/51/360_F_539635160_zUorrHfozZhsbbsKHoH0xODPrra3ZO7S.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .certificate {
+            width: 600px;
+            height: 450px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        h1 {
+            font-size: 40px;
+            color: #ff4b5c;
+            letter-spacing: 2px;
+            margin: 0;
+            animation: bounce 1s ease-out;
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: translateY(-10px);
+            }
+            50% {
+                transform: translateY(5px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .name {
+            font-size: 32px;
+            color: #ff4b5c;
+            font-weight: bold;
+            margin: 20px 0;
+            animation: nameFadeIn 1s ease-out;
+        }
+
+        @keyframes nameFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message {
+            font-style: italic;
+            color: #777;
+            margin-bottom: 30px;
+        }
+
+        .icon {
+            font-size: 50px;
+            color: gold;
+            margin: 20px 0;
+            animation: rotateStar 2s infinite;
+        }
+
+        @keyframes rotateStar {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: #333;
+            margin-top: 30px;
+        }
+
+        .footer p {
+            font-size: 16px;
+        }
+
+        .footer input {
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin: 5px;
+            width: 150px;
+            text-align: center;
+        }
+
+        .footer .button {
+            background-color: #ff4b5c;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .footer .button:hover {
+            background-color: #ff2a3f;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            .certificate {
+                width: 90%;
+                height: auto;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .name {
+                font-size: 28px;
+            }
+
+            .icon {
+                font-size: 40px;
+            }
+
+            .footer {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <div class="header">
+            <div class="logo">
+                <img src="https://i.postimg.cc/rKxTWP3n/Whats-App-Image-2024-09-07-at-14-10-51-f33224d6.jpg" alt="KnowledgeNest Logo">
+            </div>
+            <h1>CERTIFICATE</h1>
+        </div>
+        <p>Proudly Presented to:</p>
+        <h2 class="name" id="name">[Name]</h2>
+        <p class="message">For your glorious performance of hilarity in every class.</p>
+        <p><strong>Successfully completed the course of</strong></p>
+        <div class="icon">
+            <span>&#9734;</span>
+        </div>
+        <div class="footer">
+            <p>
+                Date: <input type="date" id="date-input">
+            </p>
+            <p>
+                Teacher's Signature: <span id="signature">KnowledgeNest</span>
+            </p>
+        </div>
+        <div class="footer">
+            <button class="button" onclick="updateCertificate()">Generate Certificate</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to update certificate with user input
+        function updateCertificate() {
+            var name = prompt("Enter the recipient's name:", "John Doe");
+            if (name) {
+                document.getElementById("name").textContent = name;
+            }
+
+            var date = document.getElementById("date-input").value;
+            if (date) {
+                document.getElementById("date").textContent = date;
+            } else {
+                alert("Please select a date.");
+            }
+        }
+    </script>
+</body>
+</html>
