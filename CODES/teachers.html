@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>teachers</title>
+
+   <!-- font awesome cdn link  -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+
+   <!-- custom css file link  -->
+   <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+<header class="header">
+   
+   <section class="flex">
+
+      <a href="home.html" class="logo">KnowledgeNest</a>
+
+      <form action="search.html" method="post" class="search-form">
+         <input type="text" name="search_box" required placeholder="search courses..." maxlength="100">
+         <button type="submit" class="fas fa-search"></button>
+      </form>
+
+      <div class="icons">
+         <div id="menu-btn" class="fas fa-bars"></div>
+         <div id="search-btn" class="fas fa-search"></div>
+         <div id="user-btn" class="fas fa-user"></div>
+         <div id="toggle-btn" class="fas fa-sun"></div>
+      </div>
+
+      <div class="profile">
+         <img src="images/pic-1.jpg" class="image" alt="">
+         <h3 class="name">VIHAAN</h3>
+         <p class="role">student</p>
+         <a href="profile.html" class="btn">view profile</a>
+         <div class="flex-btn">
+            <a href="login.html" class="option-btn">login</a>
+            <a href="register.html" class="option-btn">register</a>
+         </div>
+      </div>
+
+   </section>
+
+</header>   
+
+<div class="side-bar">
+
+   <div id="close-btn">
+      <i class="fas fa-times"></i>
+   </div>
+
+   <div class="profile">
+      <img src="images/pic-1.jpg" class="image" alt="">
+      <h3 class="name">VIHAAN</h3>
+      <p class="role">student</p>
+      <a href="profile.html" class="btn">view profile</a> 
+   </div>
+
+   <nav class="navbar">
+      <a href="home.html"><i class="fas fa-home"></i><span>home</span></a>
+      <a href="about.html"><i class="fas fa-question"></i><span>about</span></a>
+      <a href="courses.html"><i class="fas fa-graduation-cap"></i><span>courses</span></a>
+      <a href="teachers.html"><i class="fas fa-chalkboard-user"></i><span>teachers</span></a>
+      <a href="contact.html"><i class="fas fa-phone"></i><span>contact us</span></a>
+      <a href="test.html"><i class="fas fa-certificate"></i><span>Certificate</span></a>
+   </nav>
+
+</div>
+
+<section class="teachers">
+
+   <h1 class="heading">expert teachers</h1>
+
+   <form action="" method="post" class="search-tutor">
+      <input type="text" name="search_box" placeholder="search tutors..." required maxlength="100">
+      <button type="submit" class="fas fa-search" name="search_tutor"></button>
+   </form>
+
+   <div class="box-container">
+
+      <div class="box offer">
+         <h3>become a tutor</h3>
+         <p>Unlock potential, foster confidence, and change lives tart your journey as a tutor.</p>
+         <a href="register.html" class="inline-btn">get started</a>
+      </div>
+
+      <div class="box">
+         <div class="tutor">
+            <img src="data:image/jpeg;base64,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" alt="">
+            <div>
+               <h3>TEACHER-1</h3>
+               <h2>Aman Dhattarwal</h2>
+               <span>developer</span>
+            </div>
+         </div>
+         <p>total playlists : <span>4</span></p>
+         <p>total videos : <span>18</span></p>
+         <p>total likes : <span>1208</span></p>
+         <a href="https://in.linkedin.com/in/dhattarwalaman?trk=public_post_feed-reaction-header" class="inline-btn">view profile</a>
+      </div>
+
+      <div class="box">
+         <div class="tutor">
+            <img src="https://yt3.googleusercontent.com/oDcw9GrrQ9oYS9G1HjYNQ3x5_mDSYFvTd1xTtwTnf1Hmjh7TBGE_ZB9PqBgfI9YDnmZFKfFkfQ=s160-c-k-c0x00ffffff-no-rj" alt="">
+            <div>
+               <h3>TEACHER-2</h3>
+               <h2>Neeraj Kumar</h2>
+               <span>developer</span>
+            </div>
+         </div>
+         <p>total playlists : <span>4</span></p>
+         <p>total videos : <span>18</span></p>
+         <p>total likes : <span>1208</span></p>
+         <a href="https://www.linkedin.com/in/neeraj-kumar-a707301a9/" class="inline-btn">view profile</a>
+      </div>
+
+      <div class="box">
+         <div class="tutor">
+            <img src="https://www.dreamhost.com/static/eacbdf56a003f33d16582e1b48533adc/7397e/codewithharry_hero.webp" alt="">
+            <div>
+               <h3>TEACHER-3</h3>
+               <h2>Code with herry</h2>
+               <span>developer</span>
+            </div>
+         </div>
+         <p>total playlists : <span>4</span></p>
+         <p>total videos : <span>18</span></p>
+         <p>total likes : <span>1208</span></p>
+         <a href="https://x.com/codewithharry?lang=en" class="inline-btn">view profile</a>
+      </div>
+      <div class="box">
+         <div class="tutor">
+            <img src="https://media.licdn.com/dms/image/v2/D4D03AQHGNAxeyJhZbQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1685972237021?e=1736985600&v=beta&t=aHmMYvGbbfL1AtqbhhI0C5t1V7Dawth-dWZQVlGC1Mc" alt="">
+            <div>
+               <h3>TEACHER-4</h3>
+               <h2>Shradha Khapra</h2>
+               <span>developer</span>
+            </div>
+         </div>
+         <p>total playlists : <span>4</span></p>
+         <p>total videos : <span>18</span></p>
+         <p>total likes : <span>1208</span></p>
+         <a href="https://www.linkedin.com/in/shradha-khapra/?originalSubdomain=in" class="inline-btn">view profile</a>
+      </div>
+
+      <div class="box">
+         <div class="tutor">
+            <img src="https://media.licdn.com/dms/image/v2/C4D03AQGba3RB_4G9hQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1648225798619?e=1736985600&v=beta&t=Z20FnL6_FRU06m3JgDa8r02FyLaCdQfbE7kujleZXyI" alt="">
+            <div>
+               <h3>TEACHER-5</h3>
+               <h2>Shweta Arora</h2>
+               <span>developer</span>
+            </div>
+         </div>
+         <p>total playlists : <span>4</span></p>
+         <p>total videos : <span>18</span></p>
+         <p>total likes : <span>1208</span></p>
+         <a href="https://www.linkedin.com/in/shwetaarora97/" class="inline-btn">view profile</a>
+      </div>
+
+      <div class="box">
+         <div class="tutor">
+            <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTxbhO33b1ZhiyZr6DZd8eYw8f-5m7TiJ1ekDjzEEPj0v5RiMsaeM01iD7svrYkDdGHrf38xEc4Ui5yh6Z0oo2iNtuGae4aM6lPSRXoXOM" alt="">
+            <div>
+               <h3>TEACHER-6</h3>
+               <h2>Vaibhav Kadnar</h2>
+               <span>developer</span>
+            </div>
+         </div>
+         <p>total playlists : <span>4</span></p>
+         <p>total videos : <span>18</span></p>
+         <p>total likes : <span>1208</span></p>
+         <a href="https://www.linkedin.com/in/vaibhav-kadnar-016074189/?originalSubdomain=in" class="inline-btn">view profile</a>
+      </div>
+
+      <div class="box">
+         <div class="tutor">
+            <img src="https://media.licdn.com/dms/image/v2/D5603AQGyXMr5RXkkwQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1675256846656?e=1736985600&v=beta&t=ykr_3f5e2dha1o3hlXp2XqyuPGfpMsD_xhLYY9EyAQw" alt="">
+            <div>
+               <h3>TEACHER-7</h3>
+               <h2>Nishant Chahar</h2>
+               <span>developer</span>
+            </div>
+         </div>
+         <p>total playlists : <span>4</span></p>
+         <p>total videos : <span>18</span></p>
+         <p>total likes : <span>1208</span></p>
+         <a href="https://www.linkedin.com/in/chaharnishant11/" class="inline-btn">view profile</a> 
+      </div>
+
+   </div>
+
+</section>
+
+<footer class="footer">
+
+   &copy; copyright @ 2024 by <span>KnowledgeNest</span> | all rights reserved!
+
+</footer>
+
+<script src="script.js"></script>
+
+   
+</body>
+</html>
