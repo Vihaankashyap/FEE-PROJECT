@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Analytics Dashboard - KnowledgeNest</title>
+
+   <!-- Font Awesome -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+   
+   <!-- Chart.js -->
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
+   <!-- Custom CSS -->
+   <link rel="stylesheet" href="style.css">
+   
+   <style>
+   .dashboard {
+      padding: 2rem;
+      background: var(--light-bg);
+      min-height: calc(100vh - 8rem);
+   }
+   
+   .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding: 1rem 0;
+      border-bottom: 2px solid var(--main-color);
+   }
+   
+   .dashboard-title {
+      font-size: 2.5rem;
+      color: var(--main-color);
+      font-weight: 700;
+   }
+   
+   .dashboard-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+   }
+   
+   .period-selector, .refresh-btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: var(--main-color);
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+   }
+   
+   .period-selector:hover, .refresh-btn:hover {
+      background: var(--orange);
+      transform: translateY(-2px);
+   }
+   
+   .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+   }
+   
+   .metric-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid var(--main-color);
+      transition: transform 0.3s ease;
+   }
+   
+   .metric-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+   }
+   
+   .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+   }
+   
+   .metric-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--main-color), var(--orange));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+   }
+   
+   .metric-title {
+      font-size: 0.9rem;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 600;
+   }
+   
+   .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 0.5rem;
+   }
+   
+   .metric-change {
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+   }
+   
+   .metric-change.positive {
+      color: #22c55e;
+   }
+   
+   .metric-change.negative {
+      color: #ef4444;
+   }
+   
+   .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+   }
+   
+   .chart-container {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+   }
+   
+   .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
+   }
+   
+   .chart-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--black);
+   }
+   
+   .chart-canvas {
+      position: relative;
+      height: 300px;
+   }
+   
+   .data-table {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+   }
+   
+   .table-header {
+      background: var(--main-color);
+      color: white;
+      padding: 1rem;
+      font-weight: 600;
+   }
+   
+   .table-content {
+      max-height: 400px;
+      overflow-y: auto;
+   }
+   
+   .table-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      align-items: center;
+   }
+   
+   .table-row:hover {
+      background: #f8f9fa;
+   }
+   
+   .course-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+   }
+   
+   .course-thumbnail {
+      width: 40px;
+      height: 40px;
+      border-radius: 0.5rem;
+      object-fit: cover;
+   }
+   
+   .course-title {
+      font-weight: 500;
+      color: var(--black);
+   }
+   
+   .rating {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #fbbf24;
+   }
+   
+   .enrollment-count {
+      font-weight: 600;
+      color: var(--main-color);
+   }
+   
+   .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: var(--main-color);
+      font-size: 1.2rem;
+   }
+   
+   .error-message {
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+      text-align: center;
+   }
+   
+   .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #22c55e;
+      font-size: 0.9rem;
+   }
+   
+   .live-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+   }
+   
+   @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+   }
+   
+   .activity-feed {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+   }
+   
+   .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #eee;
+   }
+   
+   .activity-item:last-child {
+      border-bottom: none;
+   }
+   
+   .activity-icon {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: white;
+   }
+   
+   .activity-login { background: #22c55e; }
+   .activity-register { background: #3b82f6; }
+   .activity-enrollment { background: #f59e0b; }
+   .activity-completion { background: #8b5cf6; }
+   
+   .activity-details {
+      flex: 1;
+   }
+   
+   .activity-text {
+      font-size: 0.9rem;
+      color: var(--black);
+      margin-bottom: 0.2rem;
+   }
+   
+   .activity-time {
+      font-size: 0.8rem;
+      color: #666;
+   }
+   
+   @media (max-width: 1024px) {
+      .charts-grid {
+         grid-template-columns: 1fr;
+      }
+      
+      .metrics-grid {
+         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+   }
+   
+   @media (max-width: 768px) {
+      .dashboard {
+         padding: 1rem;
+      }
+      
+      .dashboard-header {
+         flex-direction: column;
+         gap: 1rem;
+         align-items: flex-start;
+      }
+      
+      .dashboard-title {
+         font-size: 2rem;
+      }
+      
+      .table-row {
+         grid-template-columns: 1fr;
+         gap: 0.5rem;
+      }
+   }
+   </style>
+</head>
+
+<body>
+
+<header class="header">
+   <section class="flex">
+      <a href="home.html" class="logo">KnowledgeNest</a>
+      <img src="https://i.postimg.cc/rKxTWP3n/Whats-App-Image-2024-09-07-at-14-10-51-f33224d6.jpg" alt="Logo" style="height: 95px; width: 95px; max-width: 100%; border-radius: 50%; object-fit: cover;">
+
+      <form action="search.html" method="post" class="search-form">
+         <input type="text" name="search_box" required placeholder="search courses..." maxlength="100">
+         <button type="submit" class="fas fa-search"></button>
+      </form>
+
+      <div class="icons">
+         <div id="menu-btn" class="fas fa-bars"></div>
+         <div id="search-btn" class="fas fa-search"></div>
+         <div id="user-btn" class="fas fa-user"></div>
+         <div id="toggle-btn" class="fas fa-sun"></div>
+      </div>
+
+      <div class="profile">
+         <img src="https://www.billabonghighschool.com/wp-content/uploads/2024/06/Top-10-Qualities-a-Good-Student-Must-Have.jpg" class="image" alt="">
+         <h3 class="name">VIHAAN</h3>
+         <p class="role">admin</p>
+         <a href="profile.html" class="btn">view profile</a>
+         <div class="flex-btn">
+            <a href="login.html" class="option-btn">login</a>
+            <a href="register.html" class="option-btn">register</a>
+         </div>
+      </div>
+   </section>
+</header>
+
+<div class="side-bar">
+   <div id="close-btn">
+      <i class="fas fa-times"></i>
+   </div>
+
+   <div class="profile">
+      <img src="https://www.billabonghighschool.com/wp-content/uploads/2024/06/Top-10-Qualities-a-Good-Student-Must-Have.jpg" class="image" alt="">
+      <h3 class="name">VIHAAN</h3>
+      <p class="role">admin</p>
+      <a href="profile.html" class="btn">view profile</a>
+   </div>
+
+   <nav class="navbar">
+      <a href="home.html"><i class="fas fa-home"></i><span>home</span></a>
+      <a href="about.html"><i class="fas fa-question"></i><span>about</span></a>
+      <a href="courses.html"><i class="fas fa-graduation-cap"></i><span>courses</span></a>
+      <a href="teachers.html"><i class="fas fa-chalkboard-user"></i><span>teachers</span></a>
+      <a href="contact.html"><i class="fas fa-phone"></i><span>contact us</span></a>
+      <a href="dashboard.html"><i class="fas fa-chart-bar"></i><span>analytics</span></a>
+   </nav>
+</div>
+
+<section class="dashboard">
+   <div class="dashboard-header">
+      <h1 class="dashboard-title">Analytics Dashboard</h1>
+      <div class="dashboard-controls">
+         <select class="period-selector" id="periodSelector">
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month" selected>This Month</option>
+            <option value="year">This Year</option>
+         </select>
+         <button class="refresh-btn" id="refreshBtn">
+            <i class="fas fa-sync-alt"></i> Refresh
+         </button>
+         <div class="live-indicator">
+            <div class="live-dot"></div>
+            Live Data
+         </div>
+      </div>
+   </div>
+
+   <div id="loadingIndicator" class="loading">
+      <i class="fas fa-spinner fa-spin"></i> Loading analytics data...
+   </div>
+
+   <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+   <div id="dashboardContent" style="display: none;">
+      <!-- Key Metrics -->
+      <div class="metrics-grid">
+         <div class="metric-card">
+            <div class="metric-header">
+               <div class="metric-icon">
+                  <i class="fas fa-users"></i>
+               </div>
+            </div>
+            <div class="metric-title">Total Users</div>
+            <div class="metric-value" id="totalUsers">0</div>
+            <div class="metric-change positive" id="usersChange">
+               <i class="fas fa-arrow-up"></i>
+               <span>+0% from last period</span>
+            </div>
+         </div>
+
+         <div class="metric-card">
+            <div class="metric-header">
+               <div class="metric-icon">
+                  <i class="fas fa-graduation-cap"></i>
+               </div>
+            </div>
+            <div class="metric-title">Total Courses</div>
+            <div class="metric-value" id="totalCourses">0</div>
+            <div class="metric-change positive" id="coursesChange">
+               <i class="fas fa-arrow-up"></i>
+               <span>+0% from last period</span>
+            </div>
+         </div>
+
+         <div class="metric-card">
+            <div class="metric-header">
+               <div class="metric-icon">
+                  <i class="fas fa-user-graduate"></i>
+               </div>
+            </div>
+            <div class="metric-title">Total Enrollments</div>
+            <div class="metric-value" id="totalEnrollments">0</div>
+            <div class="metric-change positive" id="enrollmentsChange">
+               <i class="fas fa-arrow-up"></i>
+               <span>+0% from last period</span>
+            </div>
+         </div>
+
+         <div class="metric-card">
+            <div class="metric-header">
+               <div class="metric-icon">
+                  <i class="fas fa-dollar-sign"></i>
+               </div>
+            </div>
+            <div class="metric-title">Total Revenue</div>
+            <div class="metric-value" id="totalRevenue">$0</div>
+            <div class="metric-change positive" id="revenueChange">
+               <i class="fas fa-arrow-up"></i>
+               <span>+0% from last period</span>
+            </div>
+         </div>
+
+         <div class="metric-card">
+            <div class="metric-header">
+               <div class="metric-icon">
+                  <i class="fas fa-chart-line"></i>
+               </div>
+            </div>
+            <div class="metric-title">Completion Rate</div>
+            <div class="metric-value" id="completionRate">0%</div>
+            <div class="metric-change positive" id="completionChange">
+               <i class="fas fa-arrow-up"></i>
+               <span>+0% from last period</span>
+            </div>
+         </div>
+
+         <div class="metric-card">
+            <div class="metric-header">
+               <div class="metric-icon">
+                  <i class="fas fa-star"></i>
+               </div>
+            </div>
+            <div class="metric-title">Average Rating</div>
+            <div class="metric-value" id="averageRating">0.0</div>
+            <div class="metric-change positive" id="ratingChange">
+               <i class="fas fa-arrow-up"></i>
+               <span>+0% from last period</span>
+            </div>
+         </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="charts-grid">
+         <div class="chart-container">
+            <div class="chart-header">
+               <h3 class="chart-title">User Growth Over Time</h3>
+            </div>
+            <div class="chart-canvas">
+               <canvas id="userGrowthChart"></canvas>
+            </div>
+         </div>
+
+         <div class="chart-container">
+            <div class="chart-header">
+               <h3 class="chart-title">Category Distribution</h3>
+            </div>
+            <div class="chart-canvas">
+               <canvas id="categoryChart"></canvas>
+            </div>
+         </div>
+      </div>
+
+      <div class="charts-grid">
+         <div class="data-table">
+            <div class="table-header">
+               Top Performing Courses
+            </div>
+            <div class="table-content" id="topCoursesTable">
+               <!-- Course data will be inserted here -->
+            </div>
+         </div>
+
+         <div class="activity-feed">
+            <div class="chart-header">
+               <h3 class="chart-title">Recent Activity</h3>
+            </div>
+            <div id="recentActivity">
+               <!-- Activity feed will be inserted here -->
+            </div>
+         </div>
+      </div>
+   </div>
+</section>
+
+<footer class="footer">
+   &copy; copyright @ 2024 by <span>KnowledgeNest</span> | all rights reserved!
+</footer>
+
+<script src="script.js"></script>
+
+<script>
+// Dashboard Analytics JavaScript
+class AnalyticsDashboard {
+    constructor() {
+        this.apiBaseUrl = 'http://localhost:3000/api';
+        this.currentPeriod = 'month';
+        this.charts = {};
+        this.refreshInterval = null;
+        
+        this.init();
+    }
+    
+    async init() {
+        this.setupEventListeners();
+        await this.loadDashboardData();
+        this.startAutoRefresh();
+    }
+    
+    setupEventListeners() {
+        const periodSelector = document.getElementById('periodSelector');
+        const refreshBtn = document.getElementById('refreshBtn');
+        
+        periodSelector.addEventListener('change', (e) => {
+            this.currentPeriod = e.target.value;
+            this.loadDashboardData();
+        });
+        
+        refreshBtn.addEventListener('click', () => {
+            this.loadDashboardData();
+        });
+    }
+    
+    async loadDashboardData() {
+        try {
+            this.showLoading(true);
+            this.hideError();
+            
+            // Mock API call - replace with actual API endpoint
+            const response = await this.mockApiCall();
+            
+            if (response) {
+                this.updateMetrics(response.overview);
+                this.updateCharts(response.charts);
+                this.updateTopCourses(response.charts.topCourses);
+                this.updateRecentActivity(response.activity);
+                this.showContent();
+            }
+        } catch (error) {
+            console.error('Failed to load dashboard data:', error);
+            this.showError('Failed to load analytics data. Please try again.');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+    
+    // Mock API call for demonstration
+    async mockApiCall() {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        return {
+            overview: {
+                users: {
+                    total_users: 2547,
+                    students: 2340,
+                    instructors: 45,
+                    new_users_period: 127
+                },
+                courses: {
+                    total_courses: 156,
+                    published_courses: 142,
+                    new_courses_period: 8,
+                    avg_rating: 4.3
+                },
+                enrollments: {
+                    total_enrollments: 8934,
+                    completed_enrollments: 3421,
+                    new_enrollments_period: 234
+                },
+                revenue: {
+                    total_revenue: 125847.50,
+                    revenue_period: 8934.25
+                }
+            },
+            charts: {
+                userGrowth: [
+                    { date: '2024-01-01', new_users: 45, cumulative_users: 1200 },
+                    { date: '2024-01-02', new_users: 67, cumulative_users: 1267 },
+                    { date: '2024-01-03', new_users: 52, cumulative_users: 1319 },
+                    { date: '2024-01-04', new_users: 78, cumulative_users: 1397 },
+                    { date: '2024-01-05', new_users: 43, cumulative_users: 1440 }
+                ],
+                topCourses: [
+                    {
+                        course_id: 1,
+                        title: 'Complete Web Development Bootcamp',
+                        thumbnail: 'images/thumb-1.png',
+                        enrollment_count: 1234,
+                        avg_rating: 4.8,
+                        instructor_name: 'John Doe'
+                    },
+                    {
+                        course_id: 2,
+                        title: 'JavaScript Mastery Course',
+                        thumbnail: 'images/thumb-2.png',
+                        enrollment_count: 987,
+                        avg_rating: 4.6,
+                        instructor_name: 'Jane Smith'
+                    }
+                ],
+                categoryDistribution: [
+                    { category_name: 'Web Development', course_count: 45, enrollment_count: 3421, color: '#3498db' },
+                    { category_name: 'Data Science', course_count: 23, enrollment_count: 1876, color: '#e74c3c' },
+                    { category_name: 'Design', course_count: 34, enrollment_count: 2134, color: '#9b59b6' },
+                    { category_name: 'Business', course_count: 28, enrollment_count: 1503, color: '#f39c12' }
+                ]
+            },
+            activity: [
+                { action_type: 'login', user_name: 'Alice Johnson', role: 'student', created_at: '2024-01-08T10:30:00Z' },
+                { action_type: 'register', user_name: 'Bob Wilson', role: 'student', created_at: '2024-01-08T10:25:00Z' },
+                { action_type: 'enrollment', user_name: 'Carol Davis', role: 'student', created_at: '2024-01-08T10:20:00Z' }
+            ]
+        };
+    }
+    
+    updateMetrics(overview) {
+        // Update user metrics
+        document.getElementById('totalUsers').textContent = this.formatNumber(overview.users.total_users);
+        document.getElementById('usersChange').innerHTML = 
+            `<i class="fas fa-arrow-up"></i><span>+${overview.users.new_users_period} this ${this.currentPeriod}</span>`;
+        
+        // Update course metrics
+        document.getElementById('totalCourses').textContent = this.formatNumber(overview.courses.total_courses);
+        document.getElementById('coursesChange').innerHTML = 
+            `<i class="fas fa-arrow-up"></i><span>+${overview.courses.new_courses_period} this ${this.currentPeriod}</span>`;
+        
+        // Update enrollment metrics
+        document.getElementById('totalEnrollments').textContent = this.formatNumber(overview.enrollments.total_enrollments);
+        document.getElementById('enrollmentsChange').innerHTML = 
+            `<i class="fas fa-arrow-up"></i><span>+${overview.enrollments.new_enrollments_period} this ${this.currentPeriod}</span>`;
+        
+        // Update revenue metrics
+        document.getElementById('totalRevenue').textContent = '$' + this.formatNumber(overview.revenue.total_revenue);
+        document.getElementById('revenueChange').innerHTML = 
+            `<i class="fas fa-arrow-up"></i><span>+$${this.formatNumber(overview.revenue.revenue_period)} this ${this.currentPeriod}</span>`;
+        
+        // Update completion rate
+        const completionRate = ((overview.enrollments.completed_enrollments / overview.enrollments.total_enrollments) * 100).toFixed(1);
+        document.getElementById('completionRate').textContent = completionRate + '%';
+        
+        // Update average rating
+        document.getElementById('averageRating').textContent = overview.courses.avg_rating.toFixed(1);
+    }
+    
+    updateCharts(charts) {
+        this.createUserGrowthChart(charts.userGrowth);
+        this.createCategoryChart(charts.categoryDistribution);
+    }
+    
+    createUserGrowthChart(data) {
+        const ctx = document.getElementById('userGrowthChart').getContext('2d');
+        
+        if (this.charts.userGrowth) {
+            this.charts.userGrowth.destroy();
+        }
+        
+        this.charts.userGrowth = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(item => new Date(item.date).toLocaleDateString()),
+                datasets: [{
+                    label: 'New Users',
+                    data: data.map(item => item.new_users),
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                }, {
+                    label: 'Total Users',
+                    data: data.map(item => item.cumulative_users),
+                    borderColor: 'rgb(255, 99, 132)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    
+    createCategoryChart(data) {
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        
+        if (this.charts.category) {
+            this.charts.category.destroy();
+        }
+        
+        this.charts.category = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: data.map(item => item.category_name),
+                datasets: [{
+                    data: data.map(item => item.enrollment_count),
+                    backgroundColor: data.map(item => item.color),
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+    
+    updateTopCourses(courses) {
+        const container = document.getElementById('topCoursesTable');
+        
+        container.innerHTML = courses.map(course => `
+            <div class="table-row">
+                <div class="course-info">
+                    <img src="${course.thumbnail}" alt="" class="course-thumbnail">
+                    <div>
+                        <div class="course-title">${course.title}</div>
+                        <div style="font-size: 0.8rem; color: #666;">by ${course.instructor_name}</div>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <span>${course.avg_rating}</span>
+                </div>
+                <div class="enrollment-count">${this.formatNumber(course.enrollment_count)}</div>
+            </div>
+        `).join('');
+    }
+    
+    updateRecentActivity(activities) {
+        const container = document.getElementById('recentActivity');
+        
+        container.innerHTML = activities.map(activity => `
+            <div class="activity-item">
+                <div class="activity-icon activity-${activity.action_type}">
+                    <i class="fas fa-${this.getActivityIcon(activity.action_type)}"></i>
+                </div>
+                <div class="activity-details">
+                    <div class="activity-text">
+                        <strong>${activity.user_name}</strong> ${this.getActivityText(activity.action_type)}
+                    </div>
+                    <div class="activity-time">${this.formatTimeAgo(activity.created_at)}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    getActivityIcon(type) {
+        const icons = {
+            login: 'sign-in-alt',
+            register: 'user-plus',
+            enrollment: 'graduation-cap',
+            completion: 'certificate'
+        };
+        return icons[type] || 'circle';
+    }
+    
+    getActivityText(type) {
+        const texts = {
+            login: 'logged in',
+            register: 'registered',
+            enrollment: 'enrolled in a course',
+            completion: 'completed a course'
+        };
+        return texts[type] || 'performed an action';
+    }
+    
+    formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1) + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K';
+        }
+        return num.toString();
+    }
+    
+    formatTimeAgo(timestamp) {
+        const now = new Date();
+        const time = new Date(timestamp);
+        const diff = now - time;
+        const minutes = Math.floor(diff / 60000);
+        
+        if (minutes < 1) return 'Just now';
+        if (minutes < 60) return `${minutes}m ago`;
+        
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        
+        const days = Math.floor(hours / 24);
+        return `${days}d ago`;
+    }
+    
+    showLoading(show) {
+        document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
+    }
+    
+    showContent() {
+        document.getElementById('dashboardContent').style.display = 'block';
+    }
+    
+    showError(message) {
+        const errorElement = document.getElementById('errorMessage');
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+    
+    hideError() {
+        document.getElementById('errorMessage').style.display = 'none';
+    }
+    
+    startAutoRefresh() {
+        // Refresh data every 5 minutes
+        this.refreshInterval = setInterval(() => {
+            this.loadDashboardData();
+        }, 5 * 60 * 1000);
+    }
+    
+    destroy() {
+        if (this.refreshInterval) {
+            clearInterval(this.refreshInterval);
+        }
+        
+        Object.values(this.charts).forEach(chart => {
+            if (chart) chart.destroy();
+        });
+    }
+}
+
+// Initialize dashboard when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    const dashboard = new AnalyticsDashboard();
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (window.dashboard) {
+        window.dashboard.destroy();
+    }
+});
+</script>
+
+</body>
+</html>
